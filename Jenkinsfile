@@ -43,6 +43,23 @@ pipeline {
                 }
             }
         }
+        stage('Snyk Security Scan') {
+            steps {
+                sh '''
+                # Install Snyk CLI (if not already installed)
+                npm install -g snyk
+
+                # Authenticate with Snyk (replace with your Snyk API token)
+                snyk auth $SNYK_TOKEN
+
+                # Scan the Terraform code for vulnerabilities
+                snyk iac test --directory=.
+                '''
+            }
+            environment {
+                SNYK_TOKEN = credentials('snyk-token') // Assuming you have a Jenkins credential named 'snyk-token'
+            }
+        }
         stage('Apply Terraform') {
             steps {
                 input message: "Approve Terraform Apply?", ok: "Deploy"

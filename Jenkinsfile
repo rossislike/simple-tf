@@ -273,7 +273,8 @@ def createJiraTicket(String issueTitle, String issueDescription) {
                 ''', returnStdout: true).trim()
 
                 def existingIssues = readJSON(text: searchResponse)
-
+                existingIssues.issues = [] 
+                
                 if (existingIssues.issues.size() > 0) {
                     echo "Jira issue already exists: ${existingIssues.issues[0].key}. Skipping ticket creation."
                     return existingIssues.issues[0].key
